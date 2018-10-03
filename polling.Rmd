@@ -6,25 +6,24 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+raw <- read_csv("polls_IT-parliament_2018-10-01.csv")
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r, message=FALSE}
+raw %>% select(date, firm, n, LN, M5S, FIPDLFI, PD) %>% filter(date >= "2017-09-26") %>%
+  gather(key = "party", value = "poll", LN, M5S, FIPDLFI, PD) %>% 
+  ggplot(aes(x = date, y = poll, color = party)) + geom_smooth() + geom_point(size = 0.5, alpha = 0.1)
 
-```{r cars}
-summary(cars)
+```
+Purpose of this document is to show polling results in Italy.
+
+
+
+```{r first_plot}
+
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
