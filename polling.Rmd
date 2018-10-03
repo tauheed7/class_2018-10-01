@@ -8,15 +8,19 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
-raw <- read_csv("polls_IT-parliament_2018-10-01.csv")
+x <- read_csv("https://pollofpolls.eu/get/polls/IT-parliament/format/csv", guess_max = 3000) 
+
+good_firms <- x %>% count(firm) %>% filter(nn > 100)
+
 ```
 
 
 
 ```{r, message=FALSE}
-raw %>% select(date, firm, n, LN, M5S, FIPDLFI, PD) %>% filter(date >= "2017-09-26") %>%
-  gather(key = "party", value = "poll", LN, M5S, FIPDLFI, PD) %>% 
-  ggplot(aes(x = date, y = poll, color = party)) + geom_smooth() + geom_point(size = 0.5, alpha = 0.1)
+x %>% filter(firm %in% good_firms$firm) %>% 
+  select(date, firm, n, LN, M5S, PD, FIPDLFI) %>% filter(date >= "2017-09-26") %>%
+  gather(key = "party", value = "poll", LN, M5S, PD, FIPDLFI) %>% 
+  ggplot(aes(x = date, y = poll, color = party)) + geom_smooth() + geom_point(size = 0.5, alpha = 0.1) + ggtitle("Italian Polls", subtitle = "From October 2017 to Present") + xlab("Date") + ylab("Poll") + theme_classic()
 
 ```
 Purpose of this document is to show polling results in Italy.
